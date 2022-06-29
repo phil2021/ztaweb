@@ -36,13 +36,13 @@ const deleteDestination = catchAsync(async (req, res) => {
 });
 
 const getDestinationsWithin = catchAsync(async (req, res) => {
-  const destination = distanceService.getPlacesWithin(Destination, req.params);
-  res.send(destination);
+  const destination = await distanceService.getPlacesWithin(Destination, req.params);
+  res.send({ status: 'success', results: destination.length, destination });
 });
 
 const getDestinationDistances = catchAsync(async (req, res) => {
-  const distance = distanceService.getDistances(Destination, req.params);
-  res.send(distance);
+  const distance = await distanceService.getDistances(Destination, req.params);
+  res.send({ results: distance.length, distance });
 });
 
 module.exports = {

@@ -1,0 +1,74 @@
+[{
+  "name": "Victoria Falls",
+  "summary": "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
+  "keywords": [
+    "THE MAJESTIC",
+    "Zambezi"
+  ],
+  "destinationLocation": {
+    "description": "Victoria Falls, ZWE",
+    "type": "Point",
+    "coordinates": [
+      -17.93285,
+      25.83066
+    ]
+  }
+}, {
+  "name": "Bulawayo",
+  "summary": "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
+  "keywords": [
+    "City of Kings",
+    "Skies"
+  ],
+  "destinationLocation": {
+    "description": "Bulawayo, ZWE",
+    "type": "Point",
+    "coordinates": [
+      -20.153625,
+      28.568127
+    ]
+  }
+}, {
+  "name": "Harare",
+  "summary": "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
+  "keywords": [
+    "City that never sleeps",
+    "Capital city"
+  ],
+  "destinationLocation": {
+    "description": "Harare, ZWE",
+    "type": "Point",
+    "coordinates": [
+      -17.824858,
+      31.053028
+    ]
+  }
+}, {
+  "name": "Eastern Highlands",
+  "summary": "The Eastern Highlands is a mountain range in the east of Zimbabwe and one of four distinct physiogeographic divisions on the African continent",
+  "keywords": [
+    "Mountains"
+  ],
+  "destinationLocation": {
+    "description": "Eastern Highlands, ZWE",
+    "type": "Point",
+    "coordinates": [
+      -18.723,
+      32.842
+    ]
+  }
+}, {
+  "name": "Hwange",
+  "summary": "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
+  "keywords": [
+    "THE MAJESTIC"
+  ],
+  "destinationLocation": {
+    "description": "Hwange, ZWE",
+    "type": "Point",
+    "coordinates": [
+      -18.3666652,
+      26.4833314
+    ]
+  }
+}]

@@ -43,7 +43,7 @@ const attractionSchema = mongoose.Schema(
     },
     destination: { type: mongoose.Schema.ObjectId, ref: 'Destination' },
     keywords: [String],
-    location: {
+    destinationLocation: {
       // GeoJSON
       type: {
         type: String,

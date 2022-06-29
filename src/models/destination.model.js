@@ -40,6 +40,9 @@ const destinationSchema = mongoose.Schema(
 destinationSchema.plugin(toJSON);
 destinationSchema.plugin(paginate);
 
+destinationSchema.index({ slug: 1 });
+destinationSchema.index({ destinationLocation: '2dsphere' });
+
 // Virtual populate
 destinationSchema.virtual('includesAttraction', {
   ref: 'Attraction',

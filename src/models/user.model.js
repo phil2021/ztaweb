@@ -44,6 +44,7 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    active: { type: Boolean, default: true, select: false },
   },
   {
     timestamps: true,

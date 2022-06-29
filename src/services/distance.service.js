@@ -17,9 +17,10 @@ const getPlacesWithin = async (Model, destinationParams) => {
 
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
 
-  return Model.find({
-    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  const places = await Model.find({
+    destinationLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
   });
+  return places;
 };
 
 const getDistances = async (Model, destinationParams) => {
@@ -33,7 +34,7 @@ const getDistances = async (Model, destinationParams) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Please provide latitude and longitude in the format lat, lng');
   }
 
-  return Model.aggregate([
+  const distances = await Model.aggregate([
     {
       $geoNear: {
         near: { type: 'Point', coordinates: [lng * 1, lat * 1] },
@@ -48,6 +49,7 @@ const getDistances = async (Model, destinationParams) => {
       },
     },
   ]);
+  return distances;
 };
 
 module.exports = {
