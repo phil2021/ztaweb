@@ -3,7 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { Destination } = require('../models');
-const { factoryService } = require('../services');
+const { factoryService, distanceService } = require('../services');
 
 const createDestination = catchAsync(async (req, res) => {
   const destination = await factoryService.createOne(Destination, req.body);
@@ -25,4 +25,32 @@ const getDestination = catchAsync(async (req, res) => {
   res.send(destination);
 });
 
-module.exports = { createDestination, getDestinations, getDestination };
+const updateDestination = catchAsync(async (req, res) => {
+  const destination = await factoryService.updateDocById(Destination, req.params.destinationId, req.body);
+  res.send(destination);
+});
+
+const deleteDestination = catchAsync(async (req, res) => {
+  await factoryService.deleteDocById(Destination, req.params.destinationId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const getDestinationsWithin = catchAsync(async (req, res) => {
+  const destination = distanceService.getPlacesWithin(Destination, req.params);
+  res.send(destination);
+});
+
+const getDestinationDistances = catchAsync(async (req, res) => {
+  const distance = distanceService.getDistances(Destination, req.params);
+  res.send(distance);
+});
+
+module.exports = {
+  createDestination,
+  getDestinations,
+  getDestination,
+  updateDestination,
+  deleteDestination,
+  getDestinationsWithin,
+  getDestinationDistances,
+};

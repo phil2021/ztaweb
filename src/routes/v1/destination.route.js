@@ -15,4 +15,13 @@ router
   )
   .get(destinationController.getDestinations);
 
+router
+  .route('/:destinationId')
+  .get(destinationController.getDestination)
+  .patch(auth('manageDestinations'), destinationController.updateDestination)
+  .delete(auth('manageDestinations'), destinationController.deleteDestination);
+
+router.route('/destinations-within/:distance/center/:latLng/unit/:unit').get(destinationController.getDestinationsWithin);
+
+router.route('/distances/:latLng/unit/:unit').get(destinationController.getDestinationDistances);
 module.exports = router;

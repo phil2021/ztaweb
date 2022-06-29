@@ -8,9 +8,6 @@ const ApiError = require('../utils/ApiError');
  */
 
 const createOne = async (Model, docBody) => {
-  // if (await Model.isEmailTaken(docBody.email)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  // }
   return Model.create(docBody);
 };
 
@@ -21,7 +18,7 @@ const createOne = async (Model, docBody) => {
  * @param {String} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
  * @param {number} [options.limit] - Maximum number of results per page (default = 10)
  * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>}
+ * @returns {Promise<QueryResult>} - QueryResult
  */
 const queryAll = async (Model, filter, options) => {
   const docs = await Model.paginate(filter, options);
@@ -59,17 +56,15 @@ const updateDocById = async (Model, docId, updateBody) => {
   if (!doc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Document not found');
   }
-  if (updateBody.email && (await Model.isEmailTaken(updateBody.email, docId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
+
   Object.assign(doc, updateBody);
-  await doc.save();
+  doc.save();
   return doc;
 };
 /**
  * Delete document by id
  * @param {ObjectId} docId
- * @returns {Promise<Model>}
+ * @returns {Promise<Model> }
  */
 const deleteDocById = async (Model, docId) => {
   const doc = await getDocById(Model, docId);
