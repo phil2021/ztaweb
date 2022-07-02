@@ -36,6 +36,18 @@ const getDocById = async (Model, id, popOptions) => {
   if (popOptions) query = query.populate(popOptions);
   return query;
 };
+
+/**
+ * Get document by slug
+ * @param {Object} slug
+ * @param {Object} popOptions - Populate options
+ * @returns {Promise <Model>}
+ */
+const getDocBySlug = async (Model, slug, popOptions) => {
+  let query = Model.findOne({ slug });
+  if (popOptions) query = query.populate(popOptions);
+  return query;
+};
 /**
  * Get document by email
  * @param {String} email
@@ -79,6 +91,7 @@ module.exports = {
   createOne,
   queryAll,
   getDocById,
+  getDocBySlug,
   getDocByEmail,
   updateDocById,
   deleteDocById,

@@ -4,8 +4,8 @@ const ApiError = require('../utils/ApiError');
 /**
  * Query for destinations within a certain radius
  * @param {Object} destinationParams
- * @returns {Promise<Model>}  */
-
+ * @returns {Promise<Model>}
+ */
 const getPlacesWithin = async (Model, destinationParams) => {
   // "/places-within/233/center/34.111745,-118.113491/unit/mi",
   const { distance, latLng, unit } = destinationParams;
@@ -24,7 +24,7 @@ const getPlacesWithin = async (Model, destinationParams) => {
 };
 
 const getDistances = async (Model, destinationParams) => {
-  // "/places-within/233/center/34.111745,-118.113491/unit/mi",
+  // "/distances/34.111745,-118.113491/unit/mi",
   const { latLng, unit } = destinationParams;
   const [lat, lng] = latLng.split(',');
 

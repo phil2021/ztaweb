@@ -7,11 +7,10 @@ const attractionSchema = mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Please provide a name for the Tourist Attraction!'],
-      trim: true,
+      unique: true,
     },
     altName: {
       type: String,
-      trim: true,
     },
     slug: String,
     mainImage: {
@@ -23,7 +22,7 @@ const attractionSchema = mongoose.Schema(
       type: [String],
       required: [true, 'A Tourist Attraction must have sub images'],
     },
-    imagesId: Array,
+    imagesId: [String],
     summary: {
       type: String,
       trim: true,
@@ -41,8 +40,11 @@ const attractionSchema = mongoose.Schema(
       },
       booking: String,
     },
-    destination: { type: mongoose.Schema.ObjectId, ref: 'Destination' },
     keywords: [String],
+    destination: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Destination',
+    },
     destinationLocation: {
       // GeoJSON
       type: {
@@ -95,9 +97,29 @@ const attractionSchema = mongoose.Schema(
 attractionSchema.plugin(toJSON);
 attractionSchema.plugin(paginate);
 
+attractionSchema.index({ name: 1, destination: 1, keywords: 1, activities: 1 }, { unique: true });
+attractionSchema.index({ slug: 1 });
+attractionSchema.index({ destinationLocation: '2dsphere' });
+
+// Virtual populate
+attractionSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'attraction',
+  localField: '_id',
+});
+
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
 attractionSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// QUERY MIDDLEWARE:
+attractionSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'destination',
+    select: 'name',
+  });
   next();
 });
 /**
