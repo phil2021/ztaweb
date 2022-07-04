@@ -5,10 +5,6 @@ const catchAsync = require('../utils/catchAsync');
 const { User } = require('../models');
 const { userService, factoryService } = require('../services');
 
-/* const createUser = catchAsync(async (req, res) => {
-  const user = await userService.createUser(req.body);
-  res.status(httpStatus.CREATED).send(user);
-}); */
 const createUser = catchAsync(async (req, res) => {
   const user = await factoryService.createOne(User, req.body);
   res.status(httpStatus.CREATED).send(user);

@@ -3,7 +3,19 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { Attraction } = require('../models');
-const { factoryService, distanceService } = require('../services');
+const { factoryService, attractionService, distanceService } = require('../services');
+
+/**
+ * @desc    Get Top 5 Attractions Controller
+ * @param   { Object } req - Request object
+ * @param   { Object } res - Response object
+ * @param   { Object } next - Next function
+ */
+const aliasTopAttractions = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sortBy = '-ratingsAverage';
+  next();
+};
 
 /**
  * @desc      Create New Attraction Controller
@@ -29,7 +41,10 @@ const createAttraction = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status and attractions
  */
 const getAttractions = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name']);
+  // To Allow for nested GET reviews on attraction (Hack)
+  let filter = {};
+  if (req.params.attractionId) filter = pick(req.query, ['name'], { attraction: req.params.attractionId });
+  // const filters = pick(req.query, ['name']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const attraction = await factoryService.queryAll(Attraction, filter, options);
   res.status(httpStatus.OK).json({ status: 'success', attraction });
@@ -43,7 +58,7 @@ const getAttractions = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status, and Attraction
  */
 const getAttraction = catchAsync(async (req, res) => {
-  const attraction = await factoryService.getDocById(Attraction, req.params.attractionId);
+  const attraction = await factoryService.getDocById(Attraction, req.params.attractionId, { path: 'reviews' });
   if (!Attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
   }
@@ -115,7 +130,13 @@ const getAttractionDistances = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json({ results: distance.length, distance });
 });
 
+const attractionStats = catchAsync(async (req, res) => {
+  const stats = await attractionService.getAttractionStats();
+  res.status(httpStatus.OK).json({ stats });
+});
+
 module.exports = {
+  aliasTopAttractions,
   createAttraction,
   getAttractions,
   getAttraction,
@@ -124,4 +145,5 @@ module.exports = {
   deleteAttraction,
   getAttractionsWithin,
   getAttractionDistances,
+  attractionStats,
 };

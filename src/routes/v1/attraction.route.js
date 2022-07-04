@@ -3,10 +3,12 @@ const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const { attractionValidation } = require('../../validations');
 const { attractionController } = require('../../controllers');
+const reviewRoute = require('./review.route');
 
 const router = express.Router();
 
 const {
+  aliasTopAttractions,
   createAttraction,
   getAttractions,
   getAttraction,
@@ -15,7 +17,13 @@ const {
   deleteAttraction,
   getAttractionsWithin,
   getAttractionDistances,
+  attractionStats,
 } = attractionController;
+
+router.use('/:attractionId/reviews', reviewRoute);
+
+router.use('/top-5', aliasTopAttractions, getAttractions);
+router.use('/attraction-stats', attractionStats);
 
 router
   .route('/')
@@ -28,7 +36,7 @@ router
   .patch(auth('manageAttractions'), validate(attractionValidation.updateAttraction), updateAttraction)
   .delete(auth('manageAttractions'), validate(attractionValidation.deleteAttraction), deleteAttraction);
 
-router.get('/attraction/:slug', getAttractionBySlug);
+router.get('/attraction/:slug', validate(attractionValidation.getAttraction), getAttractionBySlug);
 router.route('/attractions-within/:distance/center/:latLng/unit/:unit').get(getAttractionsWithin);
 
 router.route('/distances/:latLng/unit/:unit').get(getAttractionDistances);

@@ -3,9 +3,15 @@ const { password } = require('./custom.validation');
 
 const register = {
   body: Joi.object().keys({
+    fullName: Joi.string().required(),
+    designation: Joi.string().required(),
+    phone: Joi.string().required(),
+    companyName: Joi.string().required(),
+    facilityCategory: Joi.string().required(),
+    region: Joi.string().required(),
+    address: Joi.string().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
   }),
 };
 

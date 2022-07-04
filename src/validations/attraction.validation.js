@@ -3,13 +3,25 @@ const { objectId } = require('./custom.validation');
 
 const createAttraction = {
   body: Joi.object().keys({
-    name: Joi.string().required(),
+    name: Joi.string().required().messages({
+      'string.base': `'attraction name' should be of type 'text'`,
+      'string.empty': `'attraction name' cannot be an empty field`,
+      'any.required': `'attraction name' is required`,
+    }),
     altName: Joi.string(),
-    mainImage: Joi.string().required(),
+    mainImage: Joi.string().required().messages({
+      'string.base': `'Cover image' should be of type 'String'`,
+      'string.empty': `'Cover image' cannot be an empty field`,
+      'any.required': `'Cover image' is required`,
+    }),
     mainImageId: Joi.string(),
     images: Joi.array().items(Joi.string()),
     imagesId: Joi.string(),
-    summary: Joi.string().required(),
+    summary: Joi.string().required().messages({
+      'string.base': `'summary' should be of type 'String'`,
+      'string.empty': `'summary' cannot be an empty field`,
+      'any.required': `'summary' is required`,
+    }),
     description: Joi.string(),
     activities: Joi.object().keys({
       name: Joi.string(),
@@ -42,6 +54,7 @@ const createAttraction = {
 const getAttractions = {
   query: Joi.object().keys({
     name: Joi.string(),
+    slug: Joi.string(),
     destination: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -52,6 +65,7 @@ const getAttractions = {
 const getAttraction = {
   params: Joi.object().keys({
     attractionId: Joi.string().custom(objectId),
+    slug: Joi.string(),
   }),
 };
 
@@ -61,7 +75,7 @@ const updateAttraction = {
   }),
   body: Joi.object()
     .keys({
-      name: Joi.string(),
+      name: Joi.string().required(),
       altName: Joi.string(),
       mainImage: Joi.string(),
       mainImageId: Joi.string(),

@@ -5,7 +5,7 @@ const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
 const { facilityCategories, regions } = require('../config/enums');
 
-const userSchema = mongoose.Schema(
+const operatorSchema = mongoose.Schema(
   {
     fullName: {
       type: String,
@@ -17,6 +17,7 @@ const userSchema = mongoose.Schema(
     },
     phone: {
       type: String,
+      match: /\d/,
       required: [true, 'Please provide your phone number'],
     },
     // Company Details
@@ -47,7 +48,7 @@ const userSchema = mongoose.Schema(
     // Account Details
     email: {
       type: String,
-      required: true,
+      required: [true, 'Please provide an email'],
       unique: true,
       trim: true,
       lowercase: true,
@@ -78,7 +79,6 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    active: { type: Boolean, default: true, select: false },
   },
   {
     timestamps: true,
@@ -86,41 +86,43 @@ const userSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
+operatorSchema.plugin(toJSON);
+operatorSchema.plugin(paginate);
 
 /**
  * Check if email is taken
- * @param {string} email - The user's email
- * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
+ * @param {string} email - The operator's email
+ * @param {ObjectId} [excludeOperatorId] - The id of the operator to be excluded
  * @returns {Promise<boolean>}
  */
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
-  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
-  return !!user;
+operatorSchema.statics.isEmailTaken = async function (email, excludeOperatorId) {
+  const operator = await this.findOne({ email, _id: { $ne: excludeOperatorId } });
+  return operator;
 };
 
 /**
- * Check if password matches the user's password
+ * Check if password matches the operator's password
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.methods.isPasswordMatch = async function (password) {
-  const user = this;
-  return bcrypt.compare(password, user.password);
+operatorSchema.methods.isPasswordMatch = async function (password) {
+  const operator = this;
+  return bcrypt.compare(password, operator.password);
 };
 
-userSchema.pre('save', async function (next) {
-  const user = this;
-  if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 12);
+// Encrypt Password Using Bcrypt
+operatorSchema.pre('save', async function (next) {
+  const operator = this;
+  if (operator.isModified('password')) {
+    //   Hash the password with cost of 12
+    operator.password = await bcrypt.hash(operator.password, 12);
   }
+
   next();
 });
 
 /**
- * @typedef User
+ * @typedef Operator
  */
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+const Operator = mongoose.model('Operator', operatorSchema);
+module.exports = Operator;

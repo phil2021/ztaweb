@@ -2,13 +2,21 @@
 const mongoose = require('mongoose');
 const Attraction = require('./attraction.model');
 // Plugins
-const { toJSON } = require('./plugins');
+const { toJSON, paginate } = require('./plugins');
 
 const reviewSchema = mongoose.Schema(
   {
     review: {
       type: String,
       required: [true, 'Review cannot be empty!'],
+    },
+    reviewer: {
+      name: {
+        type: String,
+        required: [true, 'Please leave your name'],
+        unique: true,
+      },
+      image: String,
     },
     rating: {
       type: Number,
@@ -20,11 +28,6 @@ const reviewSchema = mongoose.Schema(
       ref: 'Attraction',
       required: [true, 'Review must belong to an Attraction'],
     },
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'Review must belong to a user'],
-    },
   },
   {
     timestamps: true,
@@ -35,8 +38,9 @@ const reviewSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 reviewSchema.plugin(toJSON);
+reviewSchema.plugin(paginate);
 
-reviewSchema.index({ attraction: 1, user: 1 }, { unique: true });
+reviewSchema.index({ attraction: 1, reviewer: { name: 1 } }, { unique: true });
 
 reviewSchema.statics.calcAverageRatings = async function (attractionId) {
   const stats = await this.aggregate([
@@ -83,6 +87,9 @@ reviewSchema.post(/^findByIdAnd/, async function () {
   await this.rev.constructor.calcAverageRatings(this.rev.attraction);
 });
 
+/**
+ * @typedef Review
+ */
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
