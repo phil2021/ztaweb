@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: {
         values: facilityCategories,
-        message: '{VALUE} is not supported! Category is either: {values}',
+        message: `{VALUE} is not supported! Category is either: ${facilityCategories}`,
       },
       required: [true, 'Please Provide the Facility Category'],
     },
@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: {
         values: regions,
-        message: '{VALUE} is not supported! Region is either: {values}',
+        message: `{VALUE} is not supported! Region is either: ${regions}`,
       },
       required: [true, 'Please Select your Region!'],
     },

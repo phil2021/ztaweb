@@ -1,4 +1,4 @@
-const allFacilityCategories = [
+exports.facilityCategories = [
   'Air',
   'Bed &amp; Breakfast Accommodation',
   'Boats &amp; Boat Cruises',
@@ -32,7 +32,7 @@ const allFacilityCategories = [
   'Visitor Activity Wedding Venue',
 ];
 
-const regionsEnum = [
+exports.regions = [
   'Harare',
   'Bulawayo',
   'Mutare',
@@ -77,8 +77,3 @@ const regionsEnum = [
   'Shurugwi',
   'Mhondoro',
 ];
-const facilityCategories = allFacilityCategories.values;
-const regions = regionsEnum.values;
-
-module.exports = facilityCategories;
-module.exports = regions;
