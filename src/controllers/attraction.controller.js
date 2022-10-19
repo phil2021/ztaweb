@@ -130,6 +130,12 @@ const getAttractionDistances = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json({ results: distance.length, distance });
 });
 
+/**
+ * @desc   Controller to Calculate the attraction statistics
+ * @param   { Object } req - request object
+ * @param   { Object } res - response object
+ * @returns  { JSON } - A JSON object representing the status,and specific statistics about the attraction
+ */
 const attractionStats = catchAsync(async (req, res) => {
   const stats = await attractionService.getAttractionStats();
   res.status(httpStatus.OK).json({ stats });

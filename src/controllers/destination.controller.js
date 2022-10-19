@@ -32,7 +32,7 @@ const getDestinations = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const destinations = await factoryService.queryAll(Destination, filter, options);
-  res.status(httpStatus.OK).json({ status: 'success', destinations });
+  res.status(httpStatus.OK).json(destinations);
 });
 
 /**
@@ -50,7 +50,7 @@ const getDestination = catchAsync(async (req, res) => {
   if (!destination) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Destination not found');
   }
-  res.status(httpStatus.OK).json({ status: 'success', destination });
+  res.status(httpStatus.OK).json(destination);
 });
 
 /**

@@ -5,10 +5,10 @@ const destinationRoute = require('./destination.route');
 const attractionRoute = require('./attraction.route');
 const reviewRoute = require('./review.route');
 const docsRoute = require('./docs.route');
+
 const config = require('../../config/config');
 
 const router = express.Router();
-
 const defaultRoutes = [
   { path: '/auth', route: authRoute },
   { path: '/users', route: userRoute },
