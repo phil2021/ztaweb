@@ -9,9 +9,19 @@ const limits = {
 };
 
 const fileFilter = (req, file, cb) => {
-  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|WEBP|webp)$/)) {
+  // if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|WEBP|webp)$/)) {
+  if (!file.mimetype.startsWith('image/')) {
     req.fileValidationError = 'Only image files are allowed!';
     return cb(new AppError('Not an image! Please upload only images', 400), false);
+  }
+  cb(null, true);
+};
+
+// eslint-disable-next-line no-unused-vars
+const filter = (req, file, type, cb) => {
+  if (!file.mimetype.startsWith(type)) {
+    req.fileValidationError = `Only ${type} are allowed!`;
+    return cb(new AppError(` Not a(n) ${type}! Please upload on ${type}`, 400), false);
   }
   cb(null, true);
 };

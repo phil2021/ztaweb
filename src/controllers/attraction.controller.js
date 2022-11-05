@@ -59,7 +59,7 @@ const getAttractions = catchAsync(async (req, res) => {
  */
 const getAttraction = catchAsync(async (req, res) => {
   const attraction = await factoryService.getDocById(Attraction, req.params.attractionId, { path: 'reviews' });
-  if (!Attraction) {
+  if (!attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
   }
   res.status(httpStatus.OK).json({ status: 'success', attraction });
@@ -74,7 +74,7 @@ const getAttraction = catchAsync(async (req, res) => {
  */
 const getAttractionBySlug = catchAsync(async (req, res) => {
   const attraction = await factoryService.getDocBySlug(Attraction, req.params.slug);
-  if (!Attraction) {
+  if (!attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
   }
   res.status(httpStatus.OK).json({ status: 'success', attraction });

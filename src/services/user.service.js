@@ -1,8 +1,7 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const User = require('../models/user.model');
 const ApiError = require('../utils/ApiError');
-const tokenService = require('./token.service');
-const { tokenTypes } = require('../config/tokens');
+// const { tokenTypes } = require('../config/tokens');
 
 /**
  * Create a user
@@ -85,26 +84,6 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
-/**
- * Retrieve logged in User Profile
- * @param {string} accessToken
- * @returns {Promise}
- */
-const getUserProfile = async (accessToken) => {
-  try {
-    const accessTokenDoc = await tokenService.verifyToken(accessToken, tokenTypes.ACCESS);
-    const user = await getUserById(accessTokenDoc.user);
-    if (!user) {
-      throw new Error();
-    }
-    const profile = await getUserById(user.id);
-    return profile;
-    // await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Could not retrieve your profile! Please login');
-  }
-};
-
 module.exports = {
   createUser,
   queryUsers,
@@ -112,5 +91,4 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
-  getUserProfile,
 };
