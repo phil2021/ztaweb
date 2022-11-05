@@ -4,6 +4,7 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { User } = require('../models');
 const { userService, factoryService } = require('../services');
+const logger = require('../config/logger');
 
 const createUser = catchAsync(async (req, res) => {
   const user = await factoryService.createOne(User, req.body);
@@ -17,12 +18,31 @@ const getUsers = catchAsync(async (req, res) => {
   res.send(result);
 });
 
-const getUser = catchAsync(async (req, res) => {
+const getMe = (req, res, user, next) => {
+  req.params.userId = req.user.id;
+  logger.info(req.params.userId);
+  next();
+};
+
+// eslint-disable-next-line no-unused-vars
+const getUser = catchAsync(async (req, res, next) => {
   const user = await userService.getUserById(req.params.userId);
+  logger.info(req.params.userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+
   res.send(user);
+});
+
+/* 
+
+const getProfile = catchAsync( aync (req, res) => {
+
+}) */
+const getProfile = catchAsync(async (req, res) => {
+  const profile = await userService.getUserProfile(req.query.token);
+  res.status(httpStatus.ACCEPTED).send(profile);
 });
 
 const updateUser = catchAsync(async (req, res) => {
@@ -37,8 +57,10 @@ const deleteUser = catchAsync(async (req, res) => {
 
 module.exports = {
   createUser,
+  getMe,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  getProfile,
 };
