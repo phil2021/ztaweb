@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
+const filterObj = require('../utils/filter');
 const User = require('../models');
 const { userService, factoryService } = require('../services');
 
@@ -81,15 +82,21 @@ const updateUser = catchAsync(async (req, res) => {
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
  * @property  { Object } req.body - Body object data
- * @property  { Object } req.user - An object contains logged in user data
+ * @property  { Object } req.user.id - An object contains logged in user data
  * @returns   { JSON } - A JSON object representing the status, and user data
  */
-const updateMe = catchAsync(async (req, res, next) => {
+const updateMyAccount = catchAsync(async (req, res, next) => {
   // 1) Create an error if user tries to update password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(new ApiError('This route is not for password updates! Please use auth/reset-password', 400));
   }
   // 2) Filter out unwanted field names that are not allowed to be updated
+  const filteredBody = filterObj(req.body, 'name', 'email');
+  if (req.file) filteredBody.photo = req.file.filename;
+  // 3) Update user document
+  const updatedUser = await userService.updateUserById(req.user.id, filteredBody);
+
+  res.status(httpStatus.OK).json({ status: 'success', data: { user: updatedUser } });
 });
 
 /**
@@ -104,12 +111,26 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+/**
+ * @desc      Delete LoggedIn User's Data Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.user.id - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the status and message
+ */
+const deleteMyAccount = catchAsync(async (req, res) => {
+  // Find user document and deactivate it
+  await userService.updateUserById(req.user.id, { active: 'false' });
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
-  updateMe,
+  updateMyAccount,
   deleteUser,
+  deleteMyAccount,
   getProfile,
 };

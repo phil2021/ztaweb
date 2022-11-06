@@ -39,14 +39,6 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode).send(response);
 };
 
-const errHandler = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-
-  if (config.env === 'production' && !err.isOperational) {
-  }
-};
-
 module.exports = {
   errorConverter,
   errorHandler,
