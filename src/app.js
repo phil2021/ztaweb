@@ -4,6 +4,7 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const cors = require('cors');
+const path = require('path');
 const passport = require('passport');
 const httpStatus = require('http-status');
 const config = require('./config/config');
@@ -15,6 +16,9 @@ const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 
 const app = express();
+
+// Serving static files
+app.use(express.static(path.join(__dirname, 'src/public')));
 
 if (config.env !== 'test') {
   app.use(morgan.successHandler);

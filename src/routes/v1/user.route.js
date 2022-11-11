@@ -1,17 +1,23 @@
-// Utils
-// eslint-disable-next-line no-unused-vars
-// import { singleFile } from '../../utils/multer';
-
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
-// eslint-disable-next-line import/newline-after-import
-// const { singleFile } = require('../../utils/multer');
+const { singleFile } = require('../../utils/multer');
+const sharp = require('../../utils/sharp');
+
 const router = express.Router();
 
 router.get('/me', auth('getUser'), validate(userValidation.getUser), userController.getProfile);
+router.patch(
+  '/updateMe',
+  auth('manageUser'),
+  validate(userValidation.updateUser),
+  singleFile('photo'),
+  sharp.resizeUserPhoto,
+  userController.updateMyAccount
+);
+router.delete('/deleteMe', auth('deleteUser'), validate(userValidation.deleteUser), userController.deleteMyAccount);
 
 router
   .route('/')

@@ -4,6 +4,8 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filter');
 const User = require('../models');
+const userValidation = require('../validations/user.validation');
+const logger = require('../config/logger');
 const { userService, factoryService } = require('../services');
 
 /**
@@ -85,14 +87,16 @@ const updateUser = catchAsync(async (req, res) => {
  * @property  { Object } req.user.id - An object contains logged in user data
  * @returns   { JSON } - A JSON object representing the status, and user data
  */
-const updateMyAccount = catchAsync(async (req, res, next) => {
+const updateMyAccount = catchAsync(async (req, res) => {
   // 1) Create an error if user tries to update password data
   if (req.body.password || req.body.passwordConfirm) {
-    return next(new ApiError('This route is not for password updates! Please use auth/reset-password', 400));
+    throw new ApiError(httpStatus.BAD_REQUEST, 'This route is not for password updates! Please use auth/reset-password');
   }
+
   // 2) Filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, 'name', 'email');
+  const filteredBody = filterObj(req.body, userValidation.updateUser.body);
   if (req.file) filteredBody.photo = req.file.filename;
+  logger.info(req.file.filename);
   // 3) Update user document
   const updatedUser = await userService.updateUserById(req.user.id, filteredBody);
 

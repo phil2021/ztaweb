@@ -1,6 +1,6 @@
 const allRoles = {
-  user: ['getUser'],
-  operator: ['getUser'],
+  user: ['getUser', 'manageUser', 'deleteUser'],
+  operator: ['getUser', 'manageUser', 'deleteUser'],
   admin: ['getUser', 'getUsers', 'manageUser', 'manageUsers', 'getDestinations', 'manageDestinations', 'manageAttractions'],
 };
 
