@@ -4,7 +4,6 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filter');
 const User = require('../models');
-const userValidation = require('../validations/user.validation');
 const logger = require('../config/logger');
 const { userService, factoryService } = require('../services');
 
@@ -94,7 +93,7 @@ const updateMyAccount = catchAsync(async (req, res) => {
   }
 
   // 2) Filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, userValidation.updateUser.body);
+  const filteredBody = filterObj(req.body, 'address');
   if (req.file) filteredBody.photo = req.file.filename;
   logger.info(req.file.filename);
   // 3) Update user document
@@ -124,7 +123,10 @@ const deleteUser = catchAsync(async (req, res) => {
  */
 const deleteMyAccount = catchAsync(async (req, res) => {
   // Find user document and deactivate it
-  await userService.updateUserById(req.user.id, { active: 'false' });
+  const user = await userService.updateUserById(req.user.id, { active: 'false' });
+  if (!user.active === true) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Account does not exist');
+  }
   res.status(httpStatus.NO_CONTENT).send();
 });
 

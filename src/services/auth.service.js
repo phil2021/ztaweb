@@ -90,10 +90,40 @@ const verifyEmail = async (verifyEmailToken) => {
   }
 };
 
+/**
+ * @desc    Change Password Service
+ * @param   { String } currentPassword - Current user password
+ * @param   { String } password - User's password
+ * @param   { String } userId - User ID
+ * @return  { Promise }
+ */
+const passwordChange = async (currentPassword, password, userId) => {
+  // 1) Check if password and passwordConfirmation are not the same
+  if (!password) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Please input your new Password!');
+  }
+  const user = await userService.getUserById(userId).select('+password');
+  const isPasswordMatch = await user.isPasswordMatch(currentPassword);
+
+  // 2) Check if currentPassword isn't the same of user password
+  if (!isPasswordMatch) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Passwords do not match!');
+  }
+
+  // 3) Update user password
+  user.password = password;
+
+  await user.save();
+
+  // 4) If everything is OK, send data
+  return user;
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
   verifyEmail,
+  passwordChange,
 };

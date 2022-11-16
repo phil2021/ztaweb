@@ -32,6 +32,9 @@ const getUser = {
 };
 
 const updateUser = {
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
+  }),
   body: Joi.object().keys({
     fullName: Joi.string(),
     designation: Joi.string(),
