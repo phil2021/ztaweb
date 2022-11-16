@@ -17,7 +17,8 @@ router.patch(
   sharp.resizeUserPhoto,
   userController.updateMyAccount
 );
-router.delete('/deleteMe', auth('deleteUser'), validate(userValidation.deleteUser), userController.deleteMyAccount);
+// Delete LoggedIn User Account Route
+router.post('/delete', auth('deleteUser'), validate(userValidation.deleteUser), userController.deleteMyAccount);
 
 router
   .route('/')

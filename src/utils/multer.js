@@ -17,15 +17,6 @@ const fileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
-// eslint-disable-next-line no-unused-vars
-const filter = (req, file, type, cb) => {
-  if (!file.mimetype.startsWith(type)) {
-    req.fileValidationError = `Only ${type} are allowed!`;
-    return cb(new ApiError(` Not a(n) ${type}! Please upload on ${type}`, 400), false);
-  }
-  cb(null, true);
-};
-
 /**
  * Upload single image
  * @param {String} name
@@ -60,6 +51,28 @@ exports.anyMulter = () => (req, res, next) => {
   }).any();
 
   upload(req, res, (err) => {
+    if (err) return next(new ApiError(err, 500));
+    next();
+  });
+};
+/**
+ * Accept a mix of files, specified by fields. An object with arrays of files will be stored in req.files.
+ */
+exports.multipleFiles = () => (req, res, next) => {
+  const upload = multer({
+    storage,
+    limits,
+    fileFilter,
+  }).fields([
+    { name: 'mainImage', maxCount: 1 },
+    { name: 'images', maxCount: 10 },
+  ]);
+
+  upload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return next(new ApiError(`A Multer error occurred when uploading`, 500));
+    }
+    // An unknown error occurred when uploading.
     if (err) return next(new ApiError(err, 500));
     next();
   });
