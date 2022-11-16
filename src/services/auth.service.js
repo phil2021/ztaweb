@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const tokenService = require('./token.service');
 const userService = require('./user.service');
-const Token = require('../models/token.model');
+const { User, Token } = require('../models/index');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
 
@@ -102,7 +102,7 @@ const passwordChange = async (currentPassword, password, userId) => {
   if (!password) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Please input your new Password!');
   }
-  const user = await userService.getUserById(userId).select('+password');
+  const user = await User.findById(userId).select('+password');
   const isPasswordMatch = await user.isPasswordMatch(currentPassword);
 
   // 2) Check if currentPassword isn't the same of user password

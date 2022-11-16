@@ -120,10 +120,10 @@ const verifyEmail = catchAsync(async (req, res) => {
 const changePassword = catchAsync(async (req, res) => {
   const { currentPassword, password } = req.body;
   // 1) Calling reset password service
-  await authService.changePassword(currentPassword, password, req.user.id);
+  await authService.passwordChange(currentPassword, password, req.user.id);
 
   // 2) If everything is OK, send data
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(httpStatus.OK).json({ status: 'Ok', message: 'Password changed successfully' });
 });
 
 module.exports = {
