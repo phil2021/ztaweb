@@ -88,7 +88,7 @@ const updateUser = catchAsync(async (req, res) => {
  */
 const updateMyAccount = catchAsync(async (req, res) => {
   // 1) Create an error if user tries to update password data
-  if (req.body.password || req.body.passwordConfirm) {
+  if (req.body.password) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'This route is not for password updates! Please use auth/reset-password');
   }
 

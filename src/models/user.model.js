@@ -69,6 +69,7 @@ const userSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    passwordChangedAt: Date,
     photo: {
       type: String,
       default: 'default.jpg',
@@ -119,6 +120,23 @@ userSchema.pre('save', async function (next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 12);
   }
+  next();
+});
+
+// Set passwordChangedAt field to the current time when the user change the password
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// QUERY MIDDLEWARE:
+userSchema.pre(/^find/, function (next) {
+  //  this points to the current query
+  this.find({ active: { $ne: false } });
+
+  this.start = Date.now();
   next();
 });
 

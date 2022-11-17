@@ -110,10 +110,14 @@ const passwordChange = async (currentPassword, password, userId) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Passwords do not match!');
   }
 
-  // 3) Update user password
-  user.password = password;
-
-  await user.save();
+  // Check if new password is the same as current password
+  if (!(await user.isPasswordMatch(password))) {
+    // 3) Update user password
+    user.password = password;
+    await user.save();
+  } else {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Old Password and New Password Cannot be the same!');
+  }
 
   // 4) If everything is OK, send data
   return user;
