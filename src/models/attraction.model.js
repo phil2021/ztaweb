@@ -20,6 +20,7 @@ const attractionSchema = mongoose.Schema(
     mainImageId: String,
     images: {
       type: [String],
+      default: 'default.jpg',
       required: [true, 'A Tourist Attraction must have sub images'],
     },
     imagesId: [String],
@@ -32,15 +33,22 @@ const attractionSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    activities: {
-      name: { type: String },
-      images: {
-        type: [String],
-        required: [true, 'An Activity must have sub images'],
+    activities: [
+      {
+        name: { type: String },
+        description: {
+          type: String,
+          default:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quasi et natus harum expedita id soluta provident facere officia veniam, nisi voluptatem nostrum placeat? Cupiditate molestias odio accusamus perferendis dolorum!',
+        },
+        images: {
+          type: [String],
+          default: 'default.jpg',
+          // required: [true, 'An Activity must have sub images'],
+        },
+        booking: String,
       },
-      booking: String,
-    },
-    keywords: [String],
+    ],
     destination: {
       type: mongoose.Schema.ObjectId,
       ref: 'Destination',

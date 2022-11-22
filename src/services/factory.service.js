@@ -32,7 +32,7 @@ const queryAll = async (Model, filter, options) => {
  * @returns {Promise <Model>}
  */
 const getDocById = async (Model, id, popOptions) => {
-  let query = Model.findById(id);
+  let query = await Model.findById(id);
   if (popOptions) query = query.populate(popOptions);
   return query;
 };
@@ -57,7 +57,7 @@ const getOne = async (Model, param, popOptions) => {
  * @returns {Promise <Model>}
  */
 const getDocBySlug = async (Model, slug, popOptions) => {
-  let query = Model.findOne({ slug });
+  let query = await Model.findOne({ slug });
   if (popOptions) query = query.populate(popOptions);
   return query;
 };
@@ -67,7 +67,8 @@ const getDocBySlug = async (Model, slug, popOptions) => {
  * @returns {Promise <Model>}
  */
 const getDocByEmail = async (Model, email) => {
-  return Model.findOne({ email });
+  const doc = await Model.findOne({ email });
+  return doc;
 };
 
 /**
@@ -83,7 +84,7 @@ const updateDocById = async (Model, docId, updateBody) => {
   }
 
   Object.assign(doc, updateBody);
-  doc.save();
+  await doc.save();
   return doc;
 };
 /**

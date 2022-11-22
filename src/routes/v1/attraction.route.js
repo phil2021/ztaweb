@@ -4,6 +4,8 @@ const validate = require('../../middlewares/validate');
 const { attractionValidation } = require('../../validations');
 const { attractionController } = require('../../controllers');
 const reviewRoute = require('./review.route');
+const { multipleFiles } = require('../../utils/multer');
+const sharp = require('../../utils/sharp');
 
 const router = express.Router();
 
@@ -33,7 +35,13 @@ router
 router
   .route('/:attractionId')
   .get(validate(attractionValidation.getAttraction), getAttraction)
-  .patch(auth('manageAttractions'), validate(attractionValidation.updateAttraction), updateAttraction)
+  .patch(
+    auth('manageAttractions'),
+    validate(attractionValidation.updateAttraction),
+    multipleFiles(),
+    sharp.resizeTourImages,
+    updateAttraction
+  )
   .delete(auth('manageAttractions'), validate(attractionValidation.deleteAttraction), deleteAttraction);
 
 router.get('/attraction/:slug', validate(attractionValidation.getAttraction), getAttractionBySlug);

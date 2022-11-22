@@ -51,6 +51,10 @@ exports.anyMulter = () => (req, res, next) => {
   }).any();
 
   upload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return next(new ApiError(`A Multer error occurred when uploading`, 500));
+    }
+    // An unknown error occurred when uploading.
     if (err) return next(new ApiError(err, 500));
     next();
   });
@@ -65,7 +69,7 @@ exports.multipleFiles = () => (req, res, next) => {
     fileFilter,
   }).fields([
     { name: 'mainImage', maxCount: 1 },
-    { name: 'images', maxCount: 10 },
+    { name: 'images', maxCount: 3 },
   ]);
 
   upload(req, res, (err) => {

@@ -8,6 +8,7 @@ const { factoryService } = require('../services');
 const setAttractionIds = (req, res, next) => {
   // allow nested routes
   if (!req.body.attraction) req.body.attraction = req.params.attractionId;
+  if (!req.body.user) req.body.user = req.user.id;
   next();
 };
 
