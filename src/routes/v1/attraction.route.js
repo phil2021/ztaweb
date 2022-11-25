@@ -29,7 +29,13 @@ router.use('/attraction-stats', attractionStats);
 
 router
   .route('/')
-  .post(auth('manageAttractions'), validate(attractionValidation.createAttraction), createAttraction)
+  .post(
+    auth('manageAttractions'),
+    // validate(attractionValidation.createAttraction),
+    multipleFiles(),
+    sharp.resizeTourImages,
+    createAttraction
+  )
   .get(validate(attractionValidation.getAttractions), getAttractions);
 
 router

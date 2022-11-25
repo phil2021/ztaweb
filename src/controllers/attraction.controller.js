@@ -86,11 +86,11 @@ const getAttractionBySlug = catchAsync(async (req, res) => {
  * @param     { Object } res - Response object
  * @property  { String } req.params.attractionId - Attraction ID
  * @property  { Object } req.body - Body object data
- * @returns   { JSON } - A JSON object representing the status and the attraction
+ * @returns   { JSON } - A JSON object representing the message and the attraction
  */
 const updateAttraction = catchAsync(async (req, res) => {
   const attraction = await factoryService.updateDocById(Attraction, req.params.attractionId, req.body);
-  res.send(attraction);
+  res.status(httpStatus.OK).json({ message: 'Attraction Updated Successfully!', attraction });
 });
 
 /**

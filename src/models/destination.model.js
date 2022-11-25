@@ -9,6 +9,11 @@ const destinationSchema = mongoose.Schema(
       required: [true, 'A destination must have a name'],
       unique: true,
     },
+    imageCover: {
+      type: String,
+      default: 'cover.jpg',
+      required: [true, 'A Destination must have a image cover'],
+    },
     slug: String,
     summary: {
       type: String,

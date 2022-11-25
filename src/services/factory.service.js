@@ -8,7 +8,8 @@ const ApiError = require('../utils/ApiError');
  */
 
 const createOne = async (Model, docBody) => {
-  return Model.create(docBody);
+  const doc = await Model.create(docBody);
+  return doc;
 };
 
 /**

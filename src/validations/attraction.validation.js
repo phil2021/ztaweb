@@ -3,25 +3,13 @@ const { objectId } = require('./custom.validation');
 
 const createAttraction = {
   body: Joi.object().keys({
-    name: Joi.string().required().messages({
-      'string.base': `'attraction name' should be of type 'text'`,
-      'string.empty': `'attraction name' cannot be an empty field`,
-      'any.required': `'attraction name' is required`,
-    }),
+    name: Joi.string().required(),
     altName: Joi.string(),
-    mainImage: Joi.string().required().messages({
-      'string.base': `'Cover image' should be of type 'String'`,
-      'string.empty': `'Cover image' cannot be an empty field`,
-      'any.required': `'Cover image' is required`,
-    }),
+    mainImage: Joi.string(),
     mainImageId: Joi.string(),
     images: Joi.array().items(Joi.string()),
     imagesId: Joi.string(),
-    summary: Joi.string().required().messages({
-      'string.base': `'summary' should be of type 'String'`,
-      'string.empty': `'summary' cannot be an empty field`,
-      'any.required': `'summary' is required`,
-    }),
+    summary: Joi.string().required(),
     description: Joi.string(),
     activities: Joi.object().keys({
       name: Joi.string(),

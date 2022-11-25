@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+
+const { Schema } = mongoose;
 const { toJSON, paginate } = require('./plugins');
 
-const attractionSchema = mongoose.Schema(
+const attractionSchema = Schema(
   {
     name: {
       type: String,
@@ -15,7 +17,7 @@ const attractionSchema = mongoose.Schema(
     slug: String,
     mainImage: {
       type: String,
-      required: [true, 'A Tourist Attraction must have a main image'],
+      default: 'default-cover.jpg',
     },
     mainImageId: String,
     images: {
@@ -35,25 +37,15 @@ const attractionSchema = mongoose.Schema(
     },
     activities: [
       {
-        name: { type: String },
-        description: {
-          type: String,
-          default:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quasi et natus harum expedita id soluta provident facere officia veniam, nisi voluptatem nostrum placeat? Cupiditate molestias odio accusamus perferendis dolorum!',
-        },
-        images: {
-          type: [String],
-          default: 'default.jpg',
-          // required: [true, 'An Activity must have sub images'],
-        },
-        booking: String,
+        type: mongoose.Schema.ObjectId,
+        ref: 'Activity',
       },
     ],
     destination: {
       type: mongoose.Schema.ObjectId,
       ref: 'Destination',
     },
-    destinationLocation: {
+    attractionLocation: {
       // GeoJSON
       type: {
         type: String,
@@ -124,9 +116,13 @@ attractionSchema.pre('save', function (next) {
 
 // QUERY MIDDLEWARE:
 attractionSchema.pre(/^find/, function (next) {
+  if (this.options._recursed) {
+    return next();
+  }
   this.populate({
-    path: 'destination',
+    path: 'destination attractions',
     select: 'name',
+    options: { _recused: true },
   });
   next();
 });
