@@ -32,23 +32,29 @@ const queryAll = async (Model, filter, options) => {
  * @param {Object} popOptions - Populate options
  * @returns {Promise <Model>}
  */
-const getDocById = async (Model, id, popOptions) => {
-  let query = await Model.findById(id);
-  if (popOptions) query = query.populate(popOptions);
-  return query;
+const getDocById = async (Model, id) => {
+  const doc = await Model.findById(id);
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, 'Document not found');
+  return doc;
 };
 
+/**
+ * Get document by id
+ * @param {ObjectId} id
+ * @param {Object} popOptions - Populate options
+ * @returns {Promise <Model>}
+ */
 const getOne = async (Model, param, popOptions) => {
-  let { query } = param === 'req.params.attractionId' ? Model.findById(param) : Model.findOne({ param });
-  /* let query;
-  if (param === 'req.params.attractionId') {
-    query = Model.findById(param);
-  } else {
-    query = Model.findOne({ param });
-  } */
+  // let { query } = param === 'req.params.attractionId' ? Model.findById(param) : Model.findOne({ param });
 
+  let query = Model.findById(param);
   if (popOptions) query = query.populate(popOptions);
-  return query;
+  const doc = await query;
+
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, `Document with ID: ${param} not found`);
+
+  // if (popOptions) query = query.populate(popOptions);
+  return doc;
 };
 
 /**
