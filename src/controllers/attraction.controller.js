@@ -58,7 +58,7 @@ const getAttractions = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status, and Attraction
  */
 const getAttraction = catchAsync(async (req, res) => {
-  const attraction = await factoryService.getDocById(Attraction, req.params.attractionId, { path: 'reviews' });
+  const attraction = await factoryService.getOne(Attraction, req.params.attractionId, { path: 'reviews' });
   if (!attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
   }
