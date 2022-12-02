@@ -120,7 +120,7 @@ attractionSchema.pre(/^find/, function (next) {
     return next();
   }
   this.populate({
-    path: 'destination attractions',
+    path: 'destination',
     select: 'name',
     options: { _recused: true },
   });
