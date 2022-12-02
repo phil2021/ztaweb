@@ -41,6 +41,7 @@ const getReviews = catchAsync(async (req, res) => {
 
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const review = await factoryService.queryAll(Review, filter, options);
+  if (review.results.length === 0) throw new ApiError(httpStatus.NOT_FOUND, 'No Reviews Found');
   res.status(httpStatus.OK).json({ status: 'success', review });
 });
 
@@ -53,7 +54,7 @@ const getReviews = catchAsync(async (req, res) => {
  */
 const getReview = catchAsync(async (req, res) => {
   const review = await factoryService.getDocById(Review, req.params.reviewId, { path: 'reviews' });
-  if (!Review) {
+  if (!review) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Review not found');
   }
   res.status(httpStatus.OK).json({ status: 'success', review });
@@ -68,7 +69,7 @@ const getReview = catchAsync(async (req, res) => {
  */
 const getReviewBySlug = catchAsync(async (req, res) => {
   const review = await factoryService.getDocBySlug(Review, req.params.slug);
-  if (!Review) {
+  if (!review) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Review not found');
   }
   res.status(httpStatus.OK).json({ status: 'success', review });
