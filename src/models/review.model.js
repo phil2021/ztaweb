@@ -9,25 +9,30 @@ const reviewSchema = mongoose.Schema(
     review: {
       type: String,
       required: [true, 'Review cannot be empty!'],
-    },
-    reviewer: {
-      name: {
-        type: String,
-        required: [true, 'Please leave your name'],
-        unique: true,
-      },
-      image: String,
+      unique: true,
     },
     rating: {
       type: Number,
-      min: 1,
-      max: 5,
+      min: [1, 'Rating must be above 1.0'],
+      max: [5, 'Rating must be below 5.0'],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
     },
     attraction: {
       type: mongoose.Types.ObjectId,
       ref: 'Attraction',
       required: [true, 'Review must belong to an Attraction'],
     },
+    user: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Review must belong to a user.'],
+        unique: true,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -69,17 +74,22 @@ reviewSchema.statics.calcAverageRatings = async function (attractionId) {
     });
   }
 };
-
-reviewSchema.post('save', function () {
-  // this points to current review
-  this.constructor.calcAverageRatings(this.attraction);
-});
-
+// QUERY MIDDLEWARE:
 // findByIdAndUpdate
 // findByIdAndDelete
 reviewSchema.pre(/^findByIdAnd/, async function (next) {
   this.rev = await this.findOne();
   next();
+});
+
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({ path: 'user', select: 'name photo' });
+  next();
+});
+
+reviewSchema.post('save', function () {
+  // this points to current review
+  this.constructor.calcAverageRatings(this.attraction);
 });
 
 reviewSchema.post(/^findByIdAnd/, async function () {
