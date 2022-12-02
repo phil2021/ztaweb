@@ -4,6 +4,7 @@ const userRoute = require('./user.route');
 const destinationRoute = require('./destination.route');
 const attractionRoute = require('./attraction.route');
 const reviewRoute = require('./review.route');
+const activityRoute = require('./activity.route');
 const docsRoute = require('./docs.route');
 
 const config = require('../../config/config');
@@ -15,6 +16,7 @@ const defaultRoutes = [
   { path: '/destinations', route: destinationRoute },
   { path: '/attractions', route: attractionRoute },
   { path: '/reviews', route: reviewRoute },
+  { path: '/activities', route: activityRoute },
 ];
 
 const devRoutes = [
