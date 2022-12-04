@@ -9,16 +9,12 @@ const reviewSchema = mongoose.Schema(
     review: {
       type: String,
       required: [true, 'Review cannot be empty!'],
-      unique: true,
     },
     rating: {
       type: Number,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now(),
+      required: [true, 'Rating cannot be empty!'],
     },
     attraction: {
       type: mongoose.Types.ObjectId,
@@ -30,7 +26,6 @@ const reviewSchema = mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: [true, 'Review must belong to a user.'],
-        unique: true,
       },
     ],
   },
@@ -45,7 +40,7 @@ const reviewSchema = mongoose.Schema(
 reviewSchema.plugin(toJSON);
 reviewSchema.plugin(paginate);
 
-reviewSchema.index({ attraction: 1, reviewer: { name: 1 } }, { unique: true });
+reviewSchema.index({ attraction: 1, user: 1 }, { unique: true });
 
 reviewSchema.statics.calcAverageRatings = async function (attractionId) {
   const stats = await this.aggregate([
@@ -83,7 +78,7 @@ reviewSchema.pre(/^findByIdAnd/, async function (next) {
 });
 
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'user', select: 'name photo' });
+  this.populate({ path: 'user', select: 'fullName photo' });
   next();
 });
 
