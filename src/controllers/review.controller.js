@@ -34,14 +34,14 @@ const createReview = catchAsync(async (req, res) => {
  * @property  { String } [options.sortBy] - Sort option in the format: sortField:(desc|asc) to Sort returned data
  * @property  { Number } [options.limit] - Maximum number of results per page (default = 10)
  * @property  { Number } [options.page] - Current page (default = 1)
- * @returns   { JSON } - A JSON object representing the status and reviews
+ * @returns   { JSON } - A JSON object representing the message and reviews
  */
 const getReviews = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['rating']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const review = await factoryService.queryAll(Review, filter, options);
   if (review.results.length === 0) throw new ApiError(httpStatus.NOT_FOUND, 'No Reviews Found');
-  res.status(httpStatus.OK).json({ status: 'success', review });
+  res.status(httpStatus.OK).json({ message: 'success', review });
 });
 
 /**
@@ -80,8 +80,8 @@ const updateReview = catchAsync(async (req, res) => {
  * @returns   { JSON } - An empty JSON object
  */
 const deleteReview = catchAsync(async (req, res) => {
-  await factoryService.deleteDocById(Review, req.params.reviewId);
-  res.status(httpStatus.NO_CONTENT).json();
+  await reviewService.deleteReview(req.user.id, req.params.reviewId);
+  res.status(httpStatus.OK).json({ message: 'review deleted successfully' });
 });
 
 module.exports = {
