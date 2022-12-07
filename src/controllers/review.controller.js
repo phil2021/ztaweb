@@ -37,9 +37,7 @@ const createReview = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status and reviews
  */
 const getReviews = catchAsync(async (req, res) => {
-  let filter = {};
-  if (req.params.attractionId) filter = pick(req.query, ['name'], { attraction: req.params.attractionId });
-
+  const filter = pick(req.query, ['rating']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const review = await factoryService.queryAll(Review, filter, options);
   if (review.results.length === 0) throw new ApiError(httpStatus.NOT_FOUND, 'No Reviews Found');
@@ -62,31 +60,16 @@ const getReview = catchAsync(async (req, res) => {
 });
 
 /**
- * @desc      Get Review Using It's Slug Controller
- * @param     { Object } req - Request object
- * @param     { Object } res - Response object
- * @property  { String } req.params.slug - Review slug
- * @returns   { JSON } - A JSON object representing the status, and Review
- */
-const getReviewBySlug = catchAsync(async (req, res) => {
-  const review = await factoryService.getDocBySlug(Review, req.params.slug);
-  if (!review) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Review not found');
-  }
-  res.status(httpStatus.OK).json({ status: 'success', review });
-});
-
-/**
  * @desc      Update Review Details Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
  * @property  { String } req.params.reviewId - Review ID
  * @property  { Object } req.body - Body object data
- * @returns   { JSON } - A JSON object representing the status and the review
+ * @returns   { JSON } - A JSON object representing the message and the updated review
  */
 const updateReview = catchAsync(async (req, res) => {
   const review = await reviewService.updateReview(req.user.id, req.params.reviewId, req.body);
-  res.send(review);
+  res.status(httpStatus.OK).json({ message: 'success', review });
 });
 
 /**
@@ -106,7 +89,6 @@ module.exports = {
   createReview,
   getReviews,
   getReview,
-  getReviewBySlug,
   updateReview,
   deleteReview,
 };
