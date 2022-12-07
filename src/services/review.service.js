@@ -49,4 +49,22 @@ const updateReview = async (userId, reviewId, updateBody) => {
   return review;
 };
 
-module.exports = { createReview, updateReview };
+/**
+ * @desc    Delete Review Using It's ID
+ * @param   { String } reviewId - Review ID
+ * @param   { String } userId - User ID
+ * @returns { Object<message> }
+ */
+const deleteReview = async (userId, reviewId) => {
+  const review = await Review.findById(reviewId);
+  // 1) Check if review exists
+  if (!review) throw new ApiError(httpStatus.NOT_FOUND, 'Review not found!');
+  // 2) Check if the one who want to update review is the review creator
+  if (review.user[0]._id.toString() !== userId.toString()) {
+    throw new ApiError(httpStatus.BAD_REQUEST, `Only the original reviewer can delete review!`);
+  }
+  await review.remove();
+  return null;
+};
+
+module.exports = { createReview, updateReview, deleteReview };
