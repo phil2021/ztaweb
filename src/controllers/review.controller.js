@@ -3,7 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { Review } = require('../models');
-const { factoryService } = require('../services');
+const { factoryService, reviewService } = require('../services');
 
 const setAttractionIds = (req, res, next) => {
   // allow nested routes
@@ -20,7 +20,8 @@ const setAttractionIds = (req, res, next) => {
  * @returns   { JSON } - A JSON object representing the status and review
  */
 const createReview = catchAsync(async (req, res) => {
-  const review = await factoryService.createOne(Review, req.body);
+  // const review = await factoryService.createOne(Review, req.body);
+  const review = await reviewService.createReview(req.params.attractionId, req.user.id, req.body);
   res.status(httpStatus.CREATED).json({ status: 'success', review });
 });
 
@@ -84,7 +85,7 @@ const getReviewBySlug = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status and the review
  */
 const updateReview = catchAsync(async (req, res) => {
-  const review = await factoryService.updateDocById(Review, req.params.reviewId, req.body);
+  const review = await reviewService.updateReview(req.user.id, req.params.reviewId, req.body);
   res.send(review);
 });
 
