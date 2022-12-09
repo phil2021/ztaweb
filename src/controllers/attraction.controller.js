@@ -42,9 +42,9 @@ const createAttraction = catchAsync(async (req, res) => {
  */
 const getAttractions = catchAsync(async (req, res) => {
   // To Allow for nested GET reviews on attraction (Hack)
-  let filter = {};
-  if (req.params.attractionId) filter = pick(req.query, ['name'], { attraction: req.params.attractionId });
-  // const filters = pick(req.query, ['name']);
+  // let filter = {};
+  // if (req.params.attractionId) filter = pick(req.query, ['name', 'ratingsAverage'], { attraction: req.params.attractionId });
+  const filter = pick(req.query, ['ratingsAverage', 'name']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const attraction = await factoryService.queryAll(Attraction, filter, options);
   res.status(httpStatus.OK).json({ status: 'success', attraction });
@@ -58,7 +58,10 @@ const getAttractions = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the status, and Attraction
  */
 const getAttraction = catchAsync(async (req, res) => {
-  const attraction = await factoryService.getOne(Attraction, req.params.attractionId, { path: 'reviews' });
+  const attraction = await factoryService.getOne(Attraction, req.params.attractionId, [
+    { path: 'reviews' },
+    { path: 'activities' },
+  ]);
   if (!attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
   }
