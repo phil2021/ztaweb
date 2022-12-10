@@ -6,3 +6,4 @@ module.exports.operatorService = require('./operator.service');
 module.exports.attractionService = require('./attraction.service');
 module.exports.distanceService = require('./distance.service');
 module.exports.factoryService = require('./factory.service');
+module.exports.reviewService = require('./review.service');
