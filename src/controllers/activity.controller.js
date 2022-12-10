@@ -21,7 +21,6 @@ const setAttractionIds = (req, res, next) => {
  */
 const createActivity = catchAsync(async (req, res) => {
   const activity = await factoryService.createOne(Activity, req.body);
-  //   const activity = await Activity.create(req.body);
   res.status(httpStatus.CREATED).json({ status: 'success', activity });
 });
 
@@ -63,21 +62,6 @@ const getActivity = catchAsync(async (req, res) => {
 });
 
 /**
- * @desc      Get Activity Using It's Slug Controller
- * @param     { Object } req - Request object
- * @param     { Object } res - Response object
- * @property  { String } req.params.slug - Activity slug
- * @returns   { JSON } - A JSON object representing the status, and Activity
- */
-const getActivityBySlug = catchAsync(async (req, res) => {
-  const activity = await factoryService.getDocBySlug(Activity, req.params.slug);
-  if (!activity) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Activity not found');
-  }
-  res.status(httpStatus.OK).json({ status: 'success', activity });
-});
-
-/**
  * @desc      Update Activity Details Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
@@ -107,7 +91,6 @@ module.exports = {
   createActivity,
   getActivities,
   getActivity,
-  getActivityBySlug,
   updateActivity,
   deleteActivity,
 };
