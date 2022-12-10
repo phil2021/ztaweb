@@ -60,7 +60,7 @@ const getAttractions = catchAsync(async (req, res) => {
 const getAttraction = catchAsync(async (req, res) => {
   const attraction = await factoryService.getOne(Attraction, req.params.attractionId, [
     { path: 'reviews' },
-    { path: 'activities' },
+    { path: 'activities', select: 'name imageCover' },
   ]);
   if (!attraction) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Attraction not found');
