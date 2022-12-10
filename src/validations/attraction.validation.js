@@ -18,7 +18,7 @@ const createAttraction = {
     }),
     keywords: Joi.array().items(Joi.string()),
     destination: Joi.string().custom(objectId),
-    destinationLocation: Joi.object().keys({
+    attractionLocation: Joi.object().keys({
       description: Joi.string(),
       type: Joi.string().required(),
       coordinates: Joi.array().items(Joi.number().precision(8)),
@@ -42,6 +42,7 @@ const createAttraction = {
 const getAttractions = {
   query: Joi.object().keys({
     name: Joi.string(),
+    ratingsAverage: Joi.string(),
     slug: Joi.string(),
     destination: Joi.string(),
     sortBy: Joi.string(),
@@ -76,7 +77,7 @@ const updateAttraction = {
     }),
     keywords: Joi.array().items(Joi.string()),
     destination: Joi.string().custom(objectId),
-    destinationLocation: Joi.object().keys({
+    attractionLocation: Joi.object().keys({
       description: Joi.string(),
       type: Joi.string(),
       coordinates: Joi.array().items(Joi.number().precision(8)),
