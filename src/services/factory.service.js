@@ -19,7 +19,7 @@ const createOne = async (Model, docBody) => {
  * @param {String} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
  * @param {number} [options.limit] - Maximum number of results per page (default = 10)
  * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>} - QueryResult
+ * @returns {Promise<QueryResults>} - Query Results
  */
 const queryAll = async (Model, filter, options) => {
   const docs = await Model.paginate(filter, options);
@@ -30,11 +30,11 @@ const queryAll = async (Model, filter, options) => {
  * Get document by id
  * @param {ObjectId} id
  * @param {Object} popOptions - Populate options
- * @returns {Promise <Model>}
+ * @returns {Promise <QueryResult>}
  */
 const getDocById = async (Model, id) => {
   const doc = await Model.findById(id);
-  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, 'Document not found');
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, `${Model.modelName} not found`);
   return doc;
 };
 
@@ -42,7 +42,7 @@ const getDocById = async (Model, id) => {
  * Get document by id
  * @param {ObjectId} id
  * @param {Object} popOptions - Populate options
- * @returns {Promise <Model>}
+ * @returns {Promise <QueryResult>}
  */
 const getOne = async (Model, param, popOptions) => {
   // let { query } = param === 'req.params.attractionId' ? Model.findById(param) : Model.findOne({ param });
@@ -66,6 +66,7 @@ const getOne = async (Model, param, popOptions) => {
 const getDocBySlug = async (Model, slug, popOptions) => {
   let query = await Model.findOne({ slug });
   if (popOptions) query = query.populate(popOptions);
+  if (!query) throw new ApiError(httpStatus.NOT_FOUND, `${Model.modelName} not found`);
   return query;
 };
 /**
@@ -75,6 +76,7 @@ const getDocBySlug = async (Model, slug, popOptions) => {
  */
 const getDocByEmail = async (Model, email) => {
   const doc = await Model.findOne({ email });
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, `${Model.modelName} not found`);
   return doc;
 };
 
@@ -86,14 +88,14 @@ const getDocByEmail = async (Model, email) => {
  */
 const updateDocById = async (Model, docId, updateBody) => {
   const doc = await getDocById(Model, docId);
-  if (!doc) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Document not found');
-  }
+
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, `${Model.modelName} not found`);
 
   Object.assign(doc, updateBody);
   await doc.save();
   return doc;
 };
+
 /**
  * Delete document by id
  * @param {ObjectId} docId
@@ -101,9 +103,8 @@ const updateDocById = async (Model, docId, updateBody) => {
  */
 const deleteDocById = async (Model, docId) => {
   const doc = await getDocById(Model, docId);
-  if (!doc) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Document not found');
-  }
+  if (!doc) throw new ApiError(httpStatus.NOT_FOUND, `${Model.modelName} not found`);
+
   await doc.remove();
   return doc;
 };
