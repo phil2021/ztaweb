@@ -5,13 +5,6 @@ const catchAsync = require('../utils/catchAsync');
 const { Review } = require('../models');
 const { factoryService, reviewService } = require('../services');
 
-const setAttractionIds = (req, res, next) => {
-  // allow nested routes
-  if (!req.body.attraction) req.body.attraction = req.params.attractionId;
-  if (!req.body.user) req.body.user = req.user.id;
-  next();
-};
-
 /**
  * @desc      Create New Review Controller
  * @param     { Object } req - Request object
@@ -37,7 +30,7 @@ const createReview = catchAsync(async (req, res) => {
  * @returns   { JSON } - A JSON object representing the message and reviews
  */
 const getReviews = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['rating']);
+  const filter = pick(req.query, ['rating', 'user']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const review = await factoryService.queryAll(Review, filter, options);
   if (review.results.length === 0) throw new ApiError(httpStatus.NOT_FOUND, 'No Reviews Found');
@@ -85,7 +78,6 @@ const deleteReview = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  setAttractionIds,
   createReview,
   getReviews,
   getReview,
