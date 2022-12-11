@@ -101,8 +101,7 @@ const activitySchema = Schema(
 activitySchema.plugin(toJSON);
 activitySchema.plugin(paginate);
 
-activitySchema.index({ attraction: 1, name: 1 }, { unique: true });
-activitySchema.index({ price: 1 });
+activitySchema.index({ name: 1 }, { unique: true });
 activitySchema.index({ slug: 1 });
 activitySchema.index({ startLocation: '2dsphere' });
 
