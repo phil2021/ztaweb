@@ -3,7 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filter');
-const User = require('../models');
+const { User, Review } = require('../models');
 const logger = require('../config/logger');
 const { userService, factoryService } = require('../services');
 
@@ -35,6 +35,26 @@ const getUsers = catchAsync(async (req, res) => {
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const users = await userService.queryUsers(filter, options);
   res.status(httpStatus.OK).json({ status: 'success', users });
+});
+
+/**
+ * @desc      Get All User Reviews Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } filter - Mongo filter to Select specific fields
+ * @property  { Object } options - Query options
+ * @property  { String } [options.sortBy] - Sort option in the format: sortField:(desc|asc) to Sort returned data
+ * @property  { Number } [options.limit] - Maximum number of results per page (default = 10)
+ * @property  { Number } [options.page] - Current page (default = 1)
+ * @returns   { JSON } - A JSON object representing the message and reviews
+ */
+const getReviews = catchAsync(async (req, res) => {
+  if (!req.query.user) req.query.user = req.user.id;
+  const filter = pick(req.query, ['rating', 'user']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const review = await factoryService.queryAll(Review, filter, options);
+  if (review.results.length === 0) throw new ApiError(httpStatus.NOT_FOUND, 'No Reviews Found');
+  res.status(httpStatus.OK).json({ message: 'success', review });
 });
 
 /**
@@ -125,7 +145,7 @@ const deleteMyAccount = catchAsync(async (req, res) => {
   // Find user document and deactivate it
   const user = await userService.updateUserById(req.user.id, { active: 'false' });
   if (!user.active === true) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Account does not exist');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account does not exist');
   }
   res.status(httpStatus.NO_CONTENT).send();
 });
@@ -139,4 +159,5 @@ module.exports = {
   deleteUser,
   deleteMyAccount,
   getProfile,
+  getReviews,
 };
