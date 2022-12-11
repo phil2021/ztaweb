@@ -5,13 +5,10 @@ const { activityController } = require('../../controllers');
 
 const router = express.Router({ mergeParams: true });
 
-const { setAttractionIds, createActivity, getActivities, getActivity, getActivityBySlug, updateActivity, deleteActivity } =
-  activityController;
+const { createActivity, getActivities, getActivity, updateActivity, deleteActivity } = activityController;
 
-router.route('/').post(auth(), setAttractionIds, createActivity).get(getActivities);
+router.route('/').post(auth(), createActivity).get(getActivities);
 
-router.route('/:activityId').get(getActivity).patch(updateActivity).delete(deleteActivity);
-
-router.get('/activity/:slug', getActivityBySlug);
+router.route('/:activityId').get(auth(), getActivity).patch(auth(), updateActivity).delete(auth(), deleteActivity);
 
 module.exports = router;
