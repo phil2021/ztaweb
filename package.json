@@ -1,11 +1,11 @@
 {
-  "name": "create-nodejs-express-app",
+  "name": "zta_api",
   "version": "1.7.0",
-  "description": "Create a Node.js app for building production-ready RESTful APIs using Express, by running one command",
+  "description": "Zimbabwe Tourism Authority Web API Project to showcase their services and tourism destinations available in Zimbabwe.",
   "bin": "bin/createNodejsApp.js",
   "main": "src/server.js",
-  "repository": "https://github.com/hagopj13/node-express-boilerplate.git",
-  "author": "Hagop Jamkojian <hagopj13@gmail.com>",
+  "repository": "https://github.com/phil23-4/ztaweb-1.git",
+  "author": "Phillip Francis Chapita <philfrancis95@gmail.com>",
   "license": "MIT",
   "engines": {
     "node": ">=12.0.0"
@@ -27,6 +27,7 @@
     "prepare": "husky install"
   },
   "keywords": [
+    "zta",
     "node",
     "node.js",
     "boilerplate",
