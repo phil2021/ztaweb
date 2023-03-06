@@ -10,7 +10,7 @@ const { createReview, getReviews, getReview, updateReview, deleteReview } = revi
 
 router
   .route('/')
-  .post(auth('reviewAttraction'), validate(reviewValidation.createReview), createReview)
+  .post(auth(), validate(reviewValidation.createReview), createReview)
   .get(auth('getReviews'), validate(reviewValidation.getReviews), getReviews);
 
 router
