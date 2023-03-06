@@ -18,6 +18,7 @@ const allRoles = {
     'getDestinations',
     'manageDestinations',
     'manageAttractions',
+    'manageActivities',
     'getReviews',
     'getReview',
   ],
