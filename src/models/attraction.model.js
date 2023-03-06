@@ -35,12 +35,6 @@ const attractionSchema = Schema(
       type: String,
       trim: true,
     },
-    activities: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Activity',
-      },
-    ],
     destination: {
       type: mongoose.Schema.ObjectId,
       ref: 'Destination',
@@ -99,11 +93,17 @@ attractionSchema.plugin(paginate);
 
 attractionSchema.index({ name: 1, destination: 1, keywords: 1, activities: 1 }, { unique: true });
 attractionSchema.index({ slug: 1 });
-attractionSchema.index({ destinationLocation: '2dsphere' });
+attractionSchema.index({ attractionLocation: '2dsphere' });
 
 // Virtual populate
 attractionSchema.virtual('reviews', {
   ref: 'Review',
+  foreignField: 'attraction',
+  localField: '_id',
+});
+
+attractionSchema.virtual('activities', {
+  ref: 'Activity',
   foreignField: 'attraction',
   localField: '_id',
 });
@@ -116,16 +116,13 @@ attractionSchema.pre('save', function (next) {
 
 // QUERY MIDDLEWARE:
 attractionSchema.pre(/^find/, function (next) {
-  if (this.options._recursed) {
-    return next();
-  }
   this.populate({
-    path: 'destination attractions',
+    path: 'destination',
     select: 'name',
-    options: { _recused: true },
   });
   next();
 });
+
 /**
  * @typedef Attraction
  */

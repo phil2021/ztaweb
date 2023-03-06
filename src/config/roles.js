@@ -1,7 +1,27 @@
 const allRoles = {
-  user: ['getUser', 'manageUser', 'deleteUser'],
+  user: [
+    'getUser',
+    'manageUser',
+    'deleteUser',
+    'reviewAttraction',
+    'getReviews',
+    'getReview',
+    'updateReview',
+    'deleteReview',
+  ],
   operator: ['getUser', 'manageUser', 'deleteUser'],
-  admin: ['getUser', 'getUsers', 'manageUser', 'manageUsers', 'getDestinations', 'manageDestinations', 'manageAttractions'],
+  admin: [
+    'getUser',
+    'getUsers',
+    'manageUser',
+    'manageUsers',
+    'getDestinations',
+    'manageDestinations',
+    'manageAttractions',
+    'manageActivities',
+    'getReviews',
+    'getReview',
+  ],
 };
 
 const roles = Object.keys(allRoles);

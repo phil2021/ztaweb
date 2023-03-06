@@ -9,6 +9,8 @@ const sharp = require('../../utils/sharp');
 const router = express.Router();
 
 router.get('/me', auth('getUser'), validate(userValidation.getUser), userController.getProfile);
+router.get('/me/reviews', auth(), userController.getReviews);
+
 router.patch(
   '/updateMe',
   auth('manageUser'),
@@ -17,6 +19,7 @@ router.patch(
   sharp.resizeUserPhoto,
   userController.updateMyAccount
 );
+
 // Delete LoggedIn User Account Route
 router.post('/delete', auth('deleteUser'), validate(userValidation.deleteUser), userController.deleteMyAccount);
 
