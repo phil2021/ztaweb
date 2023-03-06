@@ -4,6 +4,7 @@ const validate = require('../../middlewares/validate');
 const { attractionValidation } = require('../../validations');
 const { attractionController } = require('../../controllers');
 const reviewRoute = require('./review.route');
+const activityRoute = require('./activity.route');
 const { multipleFiles } = require('../../utils/multer');
 const sharp = require('../../utils/sharp');
 
@@ -23,6 +24,7 @@ const {
 } = attractionController;
 
 router.use('/:attractionId/reviews', reviewRoute);
+router.use('/:attractionId/activities', activityRoute);
 
 router.use('/top-5', aliasTopAttractions, getAttractions);
 router.use('/attraction-stats', attractionStats);
